@@ -1,0 +1,142 @@
+
+{% extends "boxes/base.html" %}
+
+{% block title %}AI Recommendation | PackSmart AI{% endblock %}
+
+{% block content %}
+<div class="welcome-row">
+    <div>
+        <span class="eyebrow">SMART PACKAGING ASSISTANT</span>
+        <h1>Find the right shipping box</h1>
+        <p class="muted">
+            Enter the item's dimensions and weight to find a suitable
+            box from your saved inventory.
+        </p>
+    </div>
+</div>
+
+<div class="recommend-layout">
+    <div class="form-card">
+        <div class="card-heading">
+            <span class="stat-icon">⌗</span>
+            <div>
+                <h2>Item specifications</h2>
+                <p class="muted">Measurements are required in the units shown.</p>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-grid">
+                {% for field in form %}
+                <div class="field">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="field-error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="info-note">
+                <strong>How it works</strong>
+                <p>
+                    We validate the item against your active boxes,
+                    check possible orientations and weight limits,
+                    then ask Gemini to recommend a suitable option.
+                </p>
+            </div>
+
+            <button type="submit" class="button button-primary button-wide">
+                ✳ Find the best box
+            </button>
+        </form>
+    </div>
+
+    <div class="result-panel">
+        {% if result %}
+            {% if result.box %}
+                <div class="result-success">
+                    <span class="result-check">✓</span>
+                    <span>RECOMMENDATION READY</span>
+                </div>
+
+                <h2>{{ result.box.name }}</h2>
+                <p class="muted">
+                    Selected from your saved shipping box inventory.
+                </p>
+
+                <div class="recommended-box">
+                    <div class="box-symbol">▣</div>
+                    <div>
+                        <strong>{{ result.box.length }} ×
+                            {{ result.box.breadth }} ×
+                            {{ result.box.height }} cm</strong>
+                        <p>Internal dimensions (L × B × H)</p>
+                    </div>
+                </div>
+
+                <div class="result-metrics">
+                    <div>
+                        <span>Box cost</span>
+                        <strong>₹{{ result.box.cost }}</strong>
+                    </div>
+                    <div>
+                        <span>Max capacity</span>
+                        <strong>{{ result.box.max_weight }} kg</strong>
+                    </div>
+                </div>
+
+                <div class="reason-box">
+                    <strong>Why this box?</strong>
+                    <p>{{ result.reason }}</p>
+                </div>
+
+                <div class="result-footer">
+                    <span>Recommendation source</span>
+                    {% if result.source == "gemini" %}
+                        <span class="badge badge-ai">Gemini AI</span>
+                    {% elif result.source == "fallback" %}
+                        <span class="badge badge-inactive">Rule-based fallback</span>
+                    {% else %}
+                        <span class="badge">Validation</span>
+                    {% endif %}
+                </div>
+
+                <p class="muted small-text">
+                    {{ result.eligible_count }} eligible box(es) evaluated.
+                </p>
+            {% else %}
+                <div class="no-result-icon">!</div>
+                <h2>No suitable box found</h2>
+                <p>{{ result.reason }}</p>
+                <a href="{% url 'boxes:box_create' %}"
+                   class="button button-outline">
+                    Add a larger box
+                </a>
+            {% endif %}
+        {% else %}
+            <div class="empty-result">
+                <div class="empty-result-icon">✳</div>
+                <h2>Your recommendation will appear here</h2>
+                <p>
+                    Enter the item measurements and submit the form.
+                    We'll check your inventory and display the selected box,
+                    its cost and the reason for the recommendation.
+                </p>
+                <div class="mini-feature">✓ Physical fit validation</div>
+                <div class="mini-feature">✓ Weight capacity checks</div>
+                <div class="mini-feature">✓ Gemini-assisted selection</div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

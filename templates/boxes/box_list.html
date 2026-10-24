@@ -1,0 +1,75 @@
+
+{% extends "boxes/base.html" %}
+
+{% block title %}Box Inventory | PackSmart AI{% endblock %}
+
+{% block content %}
+<div class="welcome-row">
+    <div>
+        <span class="eyebrow">INVENTORY MANAGEMENT</span>
+        <h1>Shipping boxes</h1>
+        <p class="muted">Manage dimensions, capacities and packaging costs.</p>
+    </div>
+    <a href="{% url 'boxes:box_create' %}" class="button button-primary">
+        + Add shipping box
+    </a>
+</div>
+
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Box name</th>
+                <th>Length</th>
+                <th>Breadth</th>
+                <th>Height</th>
+                <th>Capacity</th>
+                <th>Cost</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for box in boxes %}
+            <tr>
+                <td><strong>{{ box.name }}</strong></td>
+                <td>{{ box.length }} cm</td>
+                <td>{{ box.breadth }} cm</td>
+                <td>{{ box.height }} cm</td>
+                <td>{{ box.max_weight }} kg</td>
+                <td>₹{{ box.cost }}</td>
+                <td>
+                    {% if box.is_active %}
+                        <span class="badge badge-active">Active</span>
+                    {% else %}
+                        <span class="badge badge-inactive">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="actions">
+                        <a href="{% url 'boxes:box_edit' box.pk %}"
+                           class="text-link">Edit</a>
+
+                        {% if box.is_active %}
+                        <form method="post"
+                              action="{% url 'boxes:box_deactivate' box.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="link-danger">
+                                Deactivate
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="empty-state">
+                    No shipping boxes have been added yet.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

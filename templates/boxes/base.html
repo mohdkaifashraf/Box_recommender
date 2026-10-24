@@ -1,0 +1,69 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PackSmart AI{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="{% url 'boxes:dashboard' %}" class="brand">
+            <span class="brand-icon">P</span>
+            <span>PackSmart <small>AI PACKAGING</small></span>
+        </a>
+
+        <p class="nav-label">WORKSPACE</p>
+        <a class="nav-link" href="{% url 'boxes:dashboard' %}">
+            <span>▦</span> Dashboard
+        </a>
+        <a class="nav-link" href="{% url 'boxes:box_list' %}">
+            <span>▣</span> Box Inventory
+        </a>
+        <a class="nav-link" href="{% url 'boxes:box_create' %}">
+            <span>＋</span> Add New Box
+        </a>
+
+        <p class="nav-label">INTELLIGENCE</p>
+        <a class="nav-link" href="{% url 'boxes:recommend_page' %}">
+            <span>✳</span> AI Recommendation
+        </a>
+
+        <div class="sidebar-footer">
+            <span class="status-dot"></span>
+            Packaging engine ready
+            <small>Dimension validation enabled</small>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <span class="eyebrow">WAREHOUSE OPERATIONS</span>
+                <div class="topbar-title">Shipping Intelligence</div>
+            </div>
+            <a href="{% url 'boxes:recommend_page' %}" class="button button-primary">
+                ✳ Get recommendation
+            </a>
+        </header>
+
+        <section class="page-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </section>
+
+        <footer class="footer">
+            PackSmart AI · Smart packaging decisions
+        </footer>
+    </main>
+</body>
+</html>

@@ -1,0 +1,106 @@
+
+{% extends "boxes/base.html" %}
+
+{% block title %}Dashboard | PackSmart AI{% endblock %}
+
+{% block content %}
+<div class="welcome-row">
+    <div>
+        <span class="eyebrow">OVERVIEW</span>
+        <h1>Your packaging workspace</h1>
+        <p class="muted">
+            Manage shipping boxes and find the right fit for every order.
+        </p>
+    </div>
+    <a href="{% url 'boxes:box_create' %}" class="button button-outline">
+        + Add a box
+    </a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-icon">▣</span>
+        <p>Total boxes</p>
+        <h2>{{ total_boxes }}</h2>
+        <span class="muted">Saved in inventory</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon green">✓</span>
+        <p>Active boxes</p>
+        <h2>{{ active_boxes }}</h2>
+        <span class="muted">Available for recommendations</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-icon orange">Ⅱ</span>
+        <p>Inactive boxes</p>
+        <h2>{{ inactive_boxes }}</h2>
+        <span class="muted">Not used for recommendations</span>
+    </div>
+</div>
+
+<div class="hero-card">
+    <div class="hero-copy">
+        <span class="pill">AI-POWERED PACKAGING</span>
+        <h2>Every item deserves<br>a perfectly fitted box.</h2>
+        <p>
+            Enter your item's dimensions and weight. Our validation
+            engine checks the available boxes, while Gemini helps
+            select a suitable option.
+        </p>
+        <a href="{% url 'boxes:recommend_page' %}"
+           class="button button-light">
+            Recommend a box →
+        </a>
+    </div>
+    <div class="hero-illustration" aria-hidden="true">
+        <div class="box-back"></div>
+        <div class="box-front">PACK<br>SMART</div>
+        <div class="box-top"></div>
+    </div>
+</div>
+
+<div class="section-heading">
+    <div>
+        <h2>Recently added boxes</h2>
+        <p class="muted">Your latest inventory updates</p>
+    </div>
+    <a href="{% url 'boxes:box_list' %}" class="text-link">View all →</a>
+</div>
+
+<div class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Box name</th>
+                <th>Dimensions (cm)</th>
+                <th>Max weight</th>
+                <th>Cost</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for box in recent_boxes %}
+            <tr>
+                <td><strong>{{ box.name }}</strong></td>
+                <td>{{ box.length }} × {{ box.breadth }} × {{ box.height }}</td>
+                <td>{{ box.max_weight }} kg</td>
+                <td>₹{{ box.cost }}</td>
+                <td>
+                    {% if box.is_active %}
+                        <span class="badge badge-active">Active</span>
+                    {% else %}
+                        <span class="badge badge-inactive">Inactive</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="empty-state">
+                    No boxes yet. Add your first shipping box to get started.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

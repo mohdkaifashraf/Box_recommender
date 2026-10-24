@@ -1,0 +1,85 @@
+
+{% extends "boxes/base.html" %}
+
+{% block title %}{{ page_title }} | PackSmart AI{% endblock %}
+
+{% block content %}
+<div class="welcome-row">
+    <div>
+        <span class="eyebrow">INVENTORY MANAGEMENT</span>
+        <h1>{{ page_title }}</h1>
+        <p class="muted">
+            Enter the internal box dimensions and maximum weight capacity.
+        </p>
+    </div>
+    <a href="{% url 'boxes:box_list' %}" class="button button-outline">
+        ← Back to inventory
+    </a>
+</div>
+
+<div class="form-card">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <h3>Box information</h3>
+        <div class="form-grid">
+            <div class="field full-width">
+                <label for="{{ form.name.id_for_label }}">Box name</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+
+            <div class="field">
+                <label for="{{ form.length.id_for_label }}">Length (cm)</label>
+                {{ form.length }}
+                {{ form.length.errors }}
+            </div>
+            <div class="field">
+                <label for="{{ form.breadth.id_for_label }}">Breadth (cm)</label>
+                {{ form.breadth }}
+                {{ form.breadth.errors }}
+            </div>
+            <div class="field">
+                <label for="{{ form.height.id_for_label }}">Height (cm)</label>
+                {{ form.height }}
+                {{ form.height.errors }}
+            </div>
+            <div class="field">
+                <label for="{{ form.max_weight.id_for_label }}">
+                    Maximum weight (kg)
+                </label>
+                {{ form.max_weight }}
+                {{ form.max_weight.errors }}
+            </div>
+            <div class="field">
+                <label for="{{ form.cost.id_for_label }}">
+                    Cost per box (₹)
+                </label>
+                {{ form.cost }}
+                {{ form.cost.errors }}
+            </div>
+
+            <div class="field full-width checkbox-field">
+                {{ form.is_active }}
+                <label for="{{ form.is_active.id_for_label }}">
+                    Box is active and available for recommendations
+                </label>
+                {{ form.is_active.errors }}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'boxes:box_list' %}" class="button button-outline">
+                Cancel
+            </a>
+            <button type="submit" class="button button-primary">
+                Save shipping box
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
