@@ -30,7 +30,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/`. Add active boxes in the inventory before asking
+Open `Local host server`. Add active boxes in the inventory before asking
 for a recommendation. The JSON API is `POST /api/recommend/` and accepts
 `length`, `breadth`, `height` (cm), and `weight` (kg).
 
@@ -40,21 +40,3 @@ Run automated checks with:
 python manage.py check
 python manage.py test
 ```
-
-## Deployment configuration
-
-Set `DJANGO_DEBUG=false`, a unique `DJANGO_SECRET_KEY`, and
-`DJANGO_ALLOWED_HOSTS` to the exact host names serving the application. Serve
-the application over HTTPS and configure
-`DJANGO_SECURE_SSL_REDIRECT=true`, `DJANGO_HSTS_SECONDS` only after HTTPS is
-confirmed, and a production email backend using `DJANGO_EMAIL_BACKEND`.
-Configure any SMTP credentials through environment variables rather than
-committing them. Set `DJANGO_HSTS_INCLUDE_SUBDOMAINS=true` only when every
-subdomain is HTTPS-only; enable `DJANGO_HSTS_PRELOAD=true` only if you
-deliberately intend to request browser HSTS preload. Run
-`python manage.py check --deploy` against the actual deployment settings
-before release.
-
-Gemini service availability and free-tier quotas are external dependencies. If
-Gemini is temporarily unavailable or returns invalid output, recommendations
-fall back to the lowest-cost eligible box and the underlying error is logged.
